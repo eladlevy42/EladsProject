@@ -1,0 +1,13 @@
+ol {
+  list-style-type: decimal;
+}
+ol ul {
+  margin-block: 15px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
