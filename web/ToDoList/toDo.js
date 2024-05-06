@@ -1,10 +1,18 @@
-let DoneJson = localStorage.getItem("Done");
-let Done = JSON.parse(DoneJson);
-let listAsJson = localStorage.getItem("ToDoLst");
-let list = JSON.parse(listAsJson);
-list = JSON.parse(listAsJson);
+let DoneJson, Done, listAsJson, list;
+initTodoLocalStorage();
 printList();
-
+function initTodoLocalStorage() {
+  if (localStorage.getItem("ToDoLst") == null) {
+    localStorage.setItem("ToDoLst", "[]");
+  }
+  if (localStorage.getItem("Done") == null) {
+    localStorage.setItem("Done", "[]");
+  }
+  DoneJson = localStorage.getItem("Done");
+  Done = JSON.parse(DoneJson);
+  listAsJson = localStorage.getItem("ToDoLst");
+  list = JSON.parse(listAsJson);
+}
 function printList() {
   if (localStorage.getItem("ToDoLst") != "[]") {
     document.querySelector("#list").innerHTML = "Your To Do List: <br />";
@@ -22,7 +30,7 @@ function printList() {
 }
 function deleteItem(item) {
   list.sort();
-  let deletedItem = item.innerText;
+  let deletedItem = item.textContent;
   let indexInLst = list.indexOf(deletedItem);
   Done.push(deletedItem);
   Done.sort();
