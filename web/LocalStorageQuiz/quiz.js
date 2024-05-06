@@ -71,7 +71,8 @@ let questionsArr = [
     D: "D) Tesla",
   },
 ]; //array of questions with the answers (no sign to correct answer)
-let correctAns = ["A", "B", "C", "A", "B", "C", "D", "A", "B", "D"]; //an array of the correct answers, index0 = q1 and so on.
+let correctAns = ["A", "B", "C", "A", "B", "C", "D", "A", "B", "D"];
+//an array of the correct answers, index0 = q1 and so on.
 let userAnswers, userAnswersJson;
 initUserAnswer();
 function initUserAnswer() {
@@ -120,7 +121,10 @@ function updateCount() {
   }
 }
 function colorAns() {
-  //the function will run over all the answered questions, reset the color to black as default and then color the choosen answer with the right color. its in a loop so it will go on every question user answered and saved in the localStorage (userAns).
+  //the function will run over all the answered questions,
+  // reset the color to black as default and then color the choosen answer
+  // with the right color. its in a loop so it will go on every question user
+  // answered and saved in the localStorage (userAns).
   for (let i in userAnswers) {
     let answerRow = document.querySelector(`#q${i}${userAnswers[i]}`);
     //RESETING THE COLOR
@@ -140,12 +144,18 @@ function colorAns() {
 }
 function addAns(qNum, ans) {
   //adds the answer to the localStorage.
+  document.querySelector(`#q${qNum}A`).style = "border:none";
+  document.querySelector(`#q${qNum}B`).style = "border:none";
+  document.querySelector(`#q${qNum}C`).style = "border:none";
+  document.querySelector(`#q${qNum}D`).style = "border:none";
+  document.querySelector(`#q${qNum}${ans}`).style = "border:1px solid black";
   userAnswers[qNum] = ans;
   userAnswersJson = JSON.stringify(userAnswers);
   localStorage.setItem("userAns", userAnswersJson);
 }
 function revealScore() {
-  //the function will update the count, print it in the lables, and color the answers.
+  //the function will update the count,
+  // print it in the lables, and color the answers.
   updateCount();
   colorAns();
   document.querySelector("#score").innerText = `your score is: ${count}/100`;

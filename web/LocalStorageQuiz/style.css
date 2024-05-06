@@ -4,7 +4,9 @@ ol {
 ol ul {
   margin-block: 15px;
 }
-
+ul li {
+  width: 100px;
+}
 .main {
   display: flex;
   flex-direction: column;
