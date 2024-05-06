@@ -1,5 +1,5 @@
 //defaults
-let count = 0;
+let count = 1;
 let table = [
   { place: "r1c1", value: "-" },
   { place: "r1c2", value: "-" },
@@ -78,17 +78,15 @@ function disableCells() {
   }
 }
 function printBoard() {
-  count = 0;
-  updatePlayer();
   document.querySelector("#top").innerHTML = `player is: ${player}`;
+  updatePlayer();
   document.querySelector("#board").innerHTML = "";
   document.querySelector("#prompt").textContent = "";
-  for (let i of table) {
-    let place = i.place;
+  for (let i in table) {
+    let place = table[i].place;
     document.querySelector(
       `#board`
     ).innerHTML += `<div class="symbol" id="${place}" onclick="addSymbol(this)">-</div>`;
-    count++;
   }
   document.querySelector("#btnReset").style = "display:none";
   resetTable();
@@ -106,12 +104,13 @@ function updateTableValue(place) {
   }
 }
 function addSymbol(cell) {
+  console.log(count);
   document.querySelector("#btnReset").style = "display:block";
   if (cell.innerText == "-") {
+    document.querySelector("#top").innerHTML = `player is: ${player}`;
     updatePlayer();
     cell.innerText = player;
     cell.style = `color: ${color}`;
-    document.querySelector("#top").innerHTML = `player is: ${player}`;
     updateTableValue(cell.id);
     if (checkWin()) {
       // if someone won
