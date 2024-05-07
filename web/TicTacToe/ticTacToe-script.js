@@ -116,6 +116,7 @@ function resetTable() {
   ];
   userHistoryJson = JSON.stringify(table);
   localStorage.setItem("TicTacHistory", userHistoryJson);
+  count = 1;
   printBoard();
 }
 function updateTableValue(place) {
