@@ -1,6 +1,6 @@
 //defaults
 let userHistoryJson;
-let count = 1;
+let count;
 let table = [
   { place: "r1c1", value: "-" },
   { place: "r1c2", value: "-" },
@@ -13,7 +13,7 @@ let table = [
   { place: "r3c3", value: "-" },
 ];
 let color = "black";
-let player = "X";
+let player;
 
 //functions
 function init() {
@@ -23,59 +23,97 @@ function init() {
   } else {
     userHistoryJson = localStorage.getItem("TicTacHistory");
     table = JSON.parse(userHistoryJson);
+    if (!checkCanPlay() || checkWin()) {
+      emptyTable();
+      userHistoryJson = JSON.stringify(table);
+      localStorage.setItem("TicTacHistory", userHistoryJson);
+    }
   }
+  printBoard();
+}
+function returnValue(place) {
+  for (let i of table) {
+    if (i.place == place) {
+      return i.value;
+    }
+  }
+}
+function emptyTable() {
+  table = [
+    { place: "r1c1", value: "-" },
+    { place: "r1c2", value: "-" },
+    { place: "r1c3", value: "-" },
+    { place: "r2c1", value: "-" },
+    { place: "r2c2", value: "-" },
+    { place: "r2c3", value: "-" },
+    { place: "r3c1", value: "-" },
+    { place: "r3c2", value: "-" },
+    { place: "r3c3", value: "-" },
+  ];
 }
 function checkWin() {
   //diagnal
-  let c1 = document.querySelector(`#r1c1`).innerText;
-  let c2 = document.querySelector(`#r2c2`).innerText;
-  let c3 = document.querySelector(`#r3c3`).innerText;
+
+  let c1 = table[0].value;
+  let c2 = table[4].value;
+  let c3 = table[8].value;
   if (c1 == c2 && c2 == c3 && c1 != "-") {
+    console.log("1");
     return true;
   }
-  c1 = document.querySelector(`#r1c3`).innerText;
-  c2 = document.querySelector(`#r2c2`).innerText;
-  c3 = document.querySelector(`#r3c1`).innerText;
+  c1 = table[2].value;
+  c2 = table[4].value;
+  c3 = table[6].value;
   if (c1 == c2 && c2 == c3 && c1 != "-") {
+    console.log("2");
     return true;
   }
   for (let i = 1; i <= 3; i++) {
     //row win
-    c1 = document.querySelector(`#r${i}c1`).innerText;
-    c2 = document.querySelector(`#r${i}c2`).innerText;
-    c3 = document.querySelector(`#r${i}c3`).innerText;
+    c1 = returnValue(`r${i}c1`);
+    c2 = returnValue(`r${i}c2`);
+    c3 = returnValue(`r${i}c3`);
     if (c1 == c2 && c2 == c3 && c1 != "-") {
+      console.log("3");
       return true;
     }
     //culomn win
-    c1 = document.querySelector(`#r1c${i}`).innerText;
-    c2 = document.querySelector(`#r2c${i}`).innerText;
-    c3 = document.querySelector(`#r3c${i}`).innerText;
+    c1 = returnValue(`r1c${i}`);
+    c2 = returnValue(`r2c${i}`);
+    c3 = returnValue(`r3c${i}`);
     if (c1 == c2 && c2 == c3 && c1 != "-") {
+      console.log("4");
       return true;
     }
   }
   return false;
 }
+function updateCount() {
+  count = 0;
+  for (let i of table) {
+    if (i.value != "-") {
+      count++;
+    }
+  }
+  console.log(count);
+}
 function updatePlayer() {
   if (count % 2 == 0) {
     player = "X";
-    color = "green";
   } else {
     player = "O";
-    color = "red";
   }
-  count++;
+  document.querySelector("#top").innerHTML = `player is: ${player}`;
+  console.log(player);
 }
 function checkCanPlay() {
   let emptyCounter = 0;
-  for (let i = 1; i <= 3; i++) {
-    for (let j = 1; j <= 3; j++) {
-      if (document.querySelector(`#r${i}c${j}`).innerText == "-") {
-        emptyCounter++;
-      }
+  for (let i of table) {
+    if (i.value == "-") {
+      emptyCounter++;
     }
   }
+
   if (emptyCounter > 0) {
     return true;
   }
@@ -88,7 +126,7 @@ function disableCells() {
   }
 }
 function printBoard() {
-  document.querySelector("#top").innerHTML = `player is: ${player}`;
+  updateCount();
   updatePlayer();
   document.querySelector("#board").innerHTML = "";
   document.querySelector("#prompt").textContent = "";
@@ -103,20 +141,11 @@ function printBoard() {
   colorAllCells();
 }
 function resetTable() {
-  table = [
-    { place: "r1c1", value: "-" },
-    { place: "r1c2", value: "-" },
-    { place: "r1c3", value: "-" },
-    { place: "r2c1", value: "-" },
-    { place: "r2c2", value: "-" },
-    { place: "r2c3", value: "-" },
-    { place: "r3c1", value: "-" },
-    { place: "r3c2", value: "-" },
-    { place: "r3c3", value: "-" },
-  ];
+  emptyTable();
   userHistoryJson = JSON.stringify(table);
   localStorage.setItem("TicTacHistory", userHistoryJson);
-  count = 1;
+  updateCount();
+  updatePlayer();
   printBoard();
 }
 function updateTableValue(place) {
@@ -141,14 +170,13 @@ function colorAllCells() {
 }
 function addSymbol(cell) {
   if (cell.innerText == "-") {
-    document.querySelector("#top").innerHTML = `player is: ${player}`;
-    updatePlayer();
     cell.innerText = player;
-
     updateTableValue(cell.id);
     colorAllCells();
     userHistoryJson = JSON.stringify(table);
     localStorage.setItem("TicTacHistory", userHistoryJson);
+    updateCount();
+    updatePlayer();
     if (checkWin()) {
       // if someone won
       document.querySelector("#prompt").innerText = `the winner is: ${player}!`;
@@ -160,7 +188,5 @@ function addSymbol(cell) {
     }
   }
 }
-
 //print the board when game starts
 init();
-printBoard();
