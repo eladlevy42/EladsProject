@@ -87,6 +87,19 @@ function initUserAnswer() {
     userAnswers = JSON.parse(userAnswersJson);
   }
   printQuestions();
+  for (let i in userAnswers) {
+    //adding forder to any question the user already answered in the past (localStorage):
+    if (userAnswers[i] != null) {
+      //remove border to all the answer in that question - reset
+      document.querySelector(`#q${i}A`).style = "border:none";
+      document.querySelector(`#q${i}B`).style = "border:none";
+      document.querySelector(`#q${i}C`).style = "border:none";
+      document.querySelector(`#q${i}D`).style = "border:none";
+      //adding border to the selected answer only
+      document.querySelector(`#q${i}${userAnswers[i]}`).style =
+        "border:1px solid black";
+    }
+  }
 }
 function reset() {
   //reset function - won't clear all local storage, only resetting userAns.
@@ -144,10 +157,12 @@ function colorAns() {
 }
 function addAns(qNum, ans) {
   //adds the answer to the localStorage.
+  //remove border to all the answer in that question - reset
   document.querySelector(`#q${qNum}A`).style = "border:none";
   document.querySelector(`#q${qNum}B`).style = "border:none";
   document.querySelector(`#q${qNum}C`).style = "border:none";
   document.querySelector(`#q${qNum}D`).style = "border:none";
+  //adding border to the selected answer only
   document.querySelector(`#q${qNum}${ans}`).style = "border:1px solid black";
   userAnswers[qNum] = ans;
   userAnswersJson = JSON.stringify(userAnswers);
