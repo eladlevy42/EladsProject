@@ -1,4 +1,5 @@
 //defaults
+let userHistoryJson;
 let count = 1;
 let table = [
   { place: "r1c1", value: "-" },
@@ -15,6 +16,15 @@ let color = "black";
 let player = "X";
 
 //functions
+function init() {
+  if (localStorage.getItem("TicTacHistory") == null) {
+    userHistoryJson = JSON.stringify(table);
+    localStorage.setItem("TicTacHistory", userHistoryJson);
+  } else {
+    userHistoryJson = localStorage.getItem("TicTacHistory");
+    table = JSON.parse(userHistoryJson);
+  }
+}
 function checkWin() {
   //diagnal
   let c1 = document.querySelector(`#r1c1`).innerText;
@@ -84,17 +94,29 @@ function printBoard() {
   document.querySelector("#prompt").textContent = "";
   for (let i in table) {
     let place = table[i].place;
+    let value = table[i].value;
     document.querySelector(
       `#board`
-    ).innerHTML += `<div class="symbol" id="${place}" onclick="addSymbol(this)">-</div>`;
+    ).innerHTML += `<div class="symbol" id="${place}" onclick="addSymbol(this)">${value}</div>`;
   }
   document.querySelector("#btnReset").style = "display:none";
-  resetTable();
+  colorAllCells();
 }
 function resetTable() {
-  for (let i of table) {
-    i.value = "-";
-  }
+  table = [
+    { place: "r1c1", value: "-" },
+    { place: "r1c2", value: "-" },
+    { place: "r1c3", value: "-" },
+    { place: "r2c1", value: "-" },
+    { place: "r2c2", value: "-" },
+    { place: "r2c3", value: "-" },
+    { place: "r3c1", value: "-" },
+    { place: "r3c2", value: "-" },
+    { place: "r3c3", value: "-" },
+  ];
+  userHistoryJson = JSON.stringify(table);
+  localStorage.setItem("TicTacHistory", userHistoryJson);
+  printBoard();
 }
 function updateTableValue(place) {
   for (let i of table) {
@@ -103,15 +125,29 @@ function updateTableValue(place) {
     }
   }
 }
+function colorAllCells() {
+  for (i of table) {
+    let cell = document.querySelector(`#${i.place}`);
+    if (i.value != "-") {
+      document.querySelector("#btnReset").style = "display:block";
+    }
+    if (i.value == "X") {
+      cell.style = "color:green";
+    } else if (i.value == "O") {
+      cell.style = "color:red";
+    }
+  }
+}
 function addSymbol(cell) {
-  console.log(count);
-  document.querySelector("#btnReset").style = "display:block";
   if (cell.innerText == "-") {
     document.querySelector("#top").innerHTML = `player is: ${player}`;
     updatePlayer();
     cell.innerText = player;
-    cell.style = `color: ${color}`;
+
     updateTableValue(cell.id);
+    colorAllCells();
+    userHistoryJson = JSON.stringify(table);
+    localStorage.setItem("TicTacHistory", userHistoryJson);
     if (checkWin()) {
       // if someone won
       document.querySelector("#prompt").innerText = `the winner is: ${player}!`;
@@ -125,4 +161,5 @@ function addSymbol(cell) {
 }
 
 //print the board when game starts
+init();
 printBoard();
